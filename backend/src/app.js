@@ -7,6 +7,7 @@ import userRoute from "./routes/user.route.js";
 import cookieParser from "cookie-parser";
 import messageRoute from "./routes/message.route.js";
 import cors from "cors";
+
 dotenv.config();
 const app = express();
 
