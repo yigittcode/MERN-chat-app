@@ -63,7 +63,8 @@ export const login = async (req, res) => {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
-                profilePicture: user.profilePicture
+                profilePicture: user.profilePicture,
+                
             }
         });
 
@@ -84,8 +85,15 @@ export const logout = async (req, res) => {
 };
 
 export const checkAuth = (req, res) => {
+    console.log("girildi");
     try {
-        res.status(200).json(req.user);
+        res.status(200).json({
+            _id: req.user._id,
+            name: req.user.name,
+            email: req.user.email,
+            profilePicture: req.user.profilePicture,
+            createdAt: req.user.createdAt
+        });
     } catch (error) {
         console.log("Error in checkAuth controller", error.message);
         res.status(500).json({ message: "Internal Server Error" });

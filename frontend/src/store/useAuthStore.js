@@ -12,6 +12,7 @@ export const useAuthStore = create((set) => ({
     try {
         const response = await axiosInstance.get('/auth/check-auth')
         set({ authUser: response.data })
+        
     } catch (error) {
         set({ authUser: null })
     }
@@ -59,6 +60,20 @@ export const useAuthStore = create((set) => ({
         return { success: true };
     } catch (error) {
         return { success: false, error: error.response?.data?.message };
+    }
+  },
+
+  updateProfile: async (data) => {
+    set({ isUpdatingProfile: true });
+    try {
+        const response = await axiosInstance.put('/user/profile', data)
+        set({ authUser: response.data.user }) // Update to get user from response.data.user
+        return { success: true };
+    } catch (error) {
+        const errorMessage = error.response?.data?.error || 'Error updating profile';
+        return { success: false, error: errorMessage };
+    } finally {
+        set({ isUpdatingProfile: false });
     }
   }
 }))
