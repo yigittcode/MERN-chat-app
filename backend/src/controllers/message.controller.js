@@ -19,9 +19,11 @@ export const sendMessage = async (req, res) => {
         const loggedInUserId = req.user.userID;
 
         let imageUrl = "";
-        if (req.file) {
+        //  base64 string
+        const image = req.body.image;
+        if (image) {
             try {
-                const result = await cloudinary.uploader.upload(req.file.path, {
+                const result = await cloudinary.uploader.upload(image, {
                     folder: "message_images",
                     width: 500,
                     crop: "scale"

@@ -33,15 +33,16 @@ export const updateUserProfile = async (req, res) => {
 
         if (req.body.name) user.name = req.body.name;
         if (req.body.email) user.email = req.body.email;
-
-        if (req.file) {
+        // base64 string
+        const profilePicture = req.body.profilePicture;
+        if (profilePicture) {
             try {
                 if (user.profilePicture) {
                     const imageId = user.profilePicture.split("/").pop().split(".")[0];
                     await cloudinary.uploader.destroy(imageId);
                 }
 
-                const result = await cloudinary.uploader.upload(req.file.path, {
+                const result = await cloudinary.uploader.upload(profilePicture, {
                     folder: "profile_pictures",
                     width: 200,
                     crop: "scale"
