@@ -5,6 +5,7 @@ import { connectDB } from "./lib/database.js";
 import { generateJwtSecret } from './lib/generateJwtSecret.js';
 import userRoute from "./routes/user.route.js";
 import cookieParser from "cookie-parser";
+import messageRoute from "./routes/message.route.js";
 dotenv.config();
 const app = express();
 
@@ -24,6 +25,8 @@ if (!process.env.JWT_SECRET) {
 
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
+app.use("/api/messages", messageRoute);
+
 const PORT = process.env.PORT || 5000;
 connectDB().then(() => {
     app.listen(PORT, () => {

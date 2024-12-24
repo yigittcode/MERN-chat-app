@@ -74,3 +74,14 @@ export const updateUserProfile = async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 };
+
+export const getUsers = async (req, res) => {
+    const loggedInUser = req.user.userID;
+    const filteredUsers = await User.find({ _id: { $ne: loggedInUser } }).select("-password");
+    res.status(200).json({ 
+        users: filteredUsers,
+        message: "Users fetched successfully"
+    });
+};
+
+
