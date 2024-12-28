@@ -1,5 +1,5 @@
 import Message from "../models/message.model.js";
-import cloudinary from "../lib/claudinary.js";
+import cloudinary from "../lib/cloudinary.js";
 
 export const getMessages = async (req, res) => {
     const receiverId = req.params.id;

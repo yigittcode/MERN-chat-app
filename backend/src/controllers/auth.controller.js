@@ -64,7 +64,7 @@ export const login = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 profilePicture: user.profilePicture,
-                
+                createdAt: user.createdAt
             }
         });
 
@@ -84,18 +84,26 @@ export const logout = async (req, res) => {
     }
 };
 
-export const checkAuth = (req, res) => {
-    console.log("girildi");
+export const checkAuth = async (req, res) => {
     try {
+        const user = await User.findById(req.user.userID).select("-password");
+        
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
         res.status(200).json({
-            _id: req.user._id,
-            name: req.user.name,
-            email: req.user.email,
-            profilePicture: req.user.profilePicture,
-            createdAt: req.user.createdAt
+            message: "Auth check successful",
+            user: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                profilePicture: user.profilePicture,
+                createdAt: user.createdAt
+            }
         });
     } catch (error) {
         console.log("Error in checkAuth controller", error.message);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({ error: "Internal Server Error" });
     }
 };

@@ -1,5 +1,5 @@
 import User from "../models/user.model.js";
-import cloudinary from "../lib/claudinary.js";
+import cloudinary from "../lib/cloudinary.js";
 export const getUserProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.userID).select("-password");
@@ -25,39 +25,61 @@ export const getUserProfile = async (req, res) => {
 
 export const updateUserProfile = async (req, res) => {
     try {
+        console.log("Update profile request received:", req.body); // Debug log
         const user = await User.findById(req.user.userID);
 
         if (!user) {
+            console.log("User not found:", req.user.userID); // Debug log
             return res.status(404).json({ error: "User not found" });
         }
 
-        if (req.body.name) user.name = req.body.name;
-        if (req.body.email) user.email = req.body.email;
-        // base64 string
         const profilePicture = req.body.profilePicture;
         if (profilePicture) {
             try {
-                if (user.profilePicture) {
-                    const imageId = user.profilePicture.split("/").pop().split(".")[0];
-                    await cloudinary.uploader.destroy(imageId);
+                console.log("Processing profile picture..."); // Debug log
+
+                // Base64 kontrolü
+                if (!profilePicture.startsWith('data:image')) {
+                    console.log("Invalid image format received"); // Debug log
+                    return res.status(400).json({ error: "Invalid image format" });
                 }
+
+                // Cloudinary yükleme öncesi log
+                console.log("Attempting to upload to Cloudinary..."); // Debug log
 
                 const result = await cloudinary.uploader.upload(profilePicture, {
                     folder: "profile_pictures",
-                    width: 200,
+                    width: 500,
                     crop: "scale"
                 });
 
+                console.log("Cloudinary upload successful:", result.secure_url); // Debug log
+
                 user.profilePicture = result.secure_url;
+                await user.save();
+
+                return res.status(200).json({
+                    message: "Profile picture updated successfully",
+                    user: {
+                        _id: user._id,
+                        name: user.name,
+                        email: user.email,
+                        profilePicture: user.profilePicture,
+                        createdAt: user.createdAt
+                    }
+                });
             } catch (error) {
-                return res.status(400).json({ error: "Error uploading profile picture" });
+                console.error("Cloudinary upload error:", error); // Detailed error log
+                return res.status(400).json({ 
+                    error: "Error uploading profile picture",
+                    details: error.message 
+                });
             }
         }
 
-        if (req.body.password) {
-            const salt = await bcrypt.genSalt(10);
-            user.password = await bcrypt.hash(req.body.password, salt);
-        }
+        // Diğer profil güncellemeleri
+        if (req.body.name) user.name = req.body.name;
+        if (req.body.email) user.email = req.body.email;
 
         const updatedUser = await user.save();
 
@@ -67,12 +89,16 @@ export const updateUserProfile = async (req, res) => {
                 _id: updatedUser._id,
                 name: updatedUser.name,
                 email: updatedUser.email,
-                profilePicture: updatedUser.profilePicture
+                profilePicture: updatedUser.profilePicture,
+                createdAt: updatedUser.createdAt
             }
         });
     } catch (error) {
-        console.log("Error in updateUserProfile controller:", error.message);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.error("Update profile error:", error); // Detailed error log
+        res.status(500).json({ 
+            error: "Internal Server Error",
+            details: error.message 
+        });
     }
 };
 
