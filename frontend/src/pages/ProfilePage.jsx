@@ -91,10 +91,10 @@ const ProfilePage = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center p-4 bg-[#008080]">
+        <div className="min-h-screen flex items-center p-4 bg-base-200">
             <div className="container mx-auto">
-                <div className="bg-[#C0C0C0] shadow-[2px_2px_0px_0px_rgba(0,0,0,1),inset_-1px_-1px_#808080,inset_1px_1px_#FFFFFF] border border-[#808080] w-full max-w-2xl mx-auto p-4">
-                    <div className="bg-[#000080] text-white font-bold px-2 py-1 mb-4 flex items-center justify-between">
+                <div className="bg-base-100 shadow-md border w-full max-w-2xl mx-auto p-4">
+                    <div className="bg-primary text-primary-content font-bold px-2 py-1 mb-4 flex items-center justify-between">
                         <span>Profile Settings.exe</span>
                         <div className="flex gap-1">
                             <button className="bg-[#C0C0C0] text-black px-1 shadow-[1px_1px_0px_0px_rgba(0,0,0,1),inset_-1px_-1px_#808080,inset_1px_1px_#FFFFFF] hover:bg-[#d4d4d4]">

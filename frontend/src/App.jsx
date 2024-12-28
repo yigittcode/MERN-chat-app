@@ -18,6 +18,7 @@ function App() {
     checkAuth()
   }, [checkAuth])
 
+
   if (isCheckingAuth && !authUser ) {
     return (
       <div className='flex justify-center items-center h-screen'>

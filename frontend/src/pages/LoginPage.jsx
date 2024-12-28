@@ -3,7 +3,6 @@ import { useAuthStore } from "../store/useAuthStore";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
-
 const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [formData, setFormData] = useState({
@@ -33,12 +32,12 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen p-4 bg-[#008080]">
+        <div className="min-h-screen p-4 bg-base-200">
             <Toaster position="top-center" />
             <div className="container mx-auto flex justify-center items-center min-h-screen">
-                <div className="bg-[#C0C0C0] border-t-2 border-l-2 border-[#FFFFFF] border-r-2 border-b-2 border-[#808080] w-full max-w-md shadow-md">
+                <div className="bg-base-100 border-2 w-full max-w-md shadow-md">
                     {/* Title bar */}
-                    <div className="bg-[#000080] text-white px-2 py-1 flex items-center justify-between">
+                    <div className="bg-primary text-primary-content px-2 py-1 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <MessageSquare className="w-4 h-4" />
                             <span className="font-bold">RetroChat 98 - Sign In</span>
