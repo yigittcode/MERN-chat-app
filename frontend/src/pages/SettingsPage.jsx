@@ -3,8 +3,10 @@ import { useThemeStore } from "../store/useThemeStore";
 import { Send } from "lucide-react";
 
 const PREVIEW_MESSAGES = [
-  { id: 1, content: "Hey! How's it going?", isSent: false },
-  { id: 2, content: "I'm doing great! Just working on some new features.", isSent: true },
+  { id: 1, content: "Hey! *waves* Welcome to RetroChat! Choose a theme that matches your style!", isSent: false },
+  { id: 2, content: "omg this is so cool! (y) brings back memories of MSN messenger days :)", isSent: true },
+  { id: 3, content: "*nudge* Don't forget to check out all the themes!", isSent: false },
+  { id: 4, content: "brb changing my display pic and status message <3", isSent: true },
 ];
 
 const SettingsPage = () => {
