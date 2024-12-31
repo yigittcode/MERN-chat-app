@@ -13,6 +13,11 @@ const io = new Server(server, {
   },
 });
 
+
+export const getReceiverSocketId = (userId) => {
+  return socketMap.get(userId);
+}
+
 // Map to store online users
 const socketMap = new Map(); // {userId: socketId}
 
