@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
@@ -12,6 +12,20 @@ const Sidebar = () => {
     useEffect(() => {
         getUsers();
     }, [getUsers]);
+
+    // Sort users: online users first, then alphabetically by name
+    const sortedUsers = useMemo(() => {
+        return [...users].sort((a, b) => {
+            const isAOnline = onlineUsers.includes(a._id);
+            const isBOnline = onlineUsers.includes(b._id);
+            
+            if (isAOnline && !isBOnline) return -1;
+            if (!isAOnline && isBOnline) return 1;
+            
+            // If both users have the same online status, sort by name
+            return a.name.localeCompare(b.name);
+        });
+    }, [users, onlineUsers]);
 
     if (isUsersLoading) return <SidebarSkeleton />;
 
@@ -27,7 +41,7 @@ const Sidebar = () => {
             </div>
 
             <div className="overflow-y-auto w-full py-1">
-                {users.map((user) => (
+                {sortedUsers.map((user) => (
                     <SidebarContact
                         key={user._id}
                         user={user}
