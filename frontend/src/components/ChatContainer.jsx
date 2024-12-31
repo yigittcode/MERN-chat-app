@@ -5,6 +5,7 @@ import ChatHeader from './ChatHeader'
 import MessageSkeleton from './skeletons/MessageSkeleton'
 import { useAuthStore } from '../store/useAuthStore'
 import { formatMessageTime } from '../lib/utils'
+import Avatar from 'react-avatar'
 
 const ChatContainer = () => {
   const { 
@@ -53,11 +54,19 @@ const ChatContainer = () => {
                 {message.sender !== authUser._id && (
                   <div className="avatar self-end mb-1">
                     <div className="w-8 h-8 rounded-full ring-2 ring-base-300 overflow-hidden">
-                      <img
-                        src={selectedUser.profilePicture || "/default-avatar.png"}
-                        alt="avatar"
-                        className="w-full h-full object-cover"
-                      />
+                      {selectedUser.profilePicture ? (
+                        <img
+                          src={selectedUser.profilePicture}
+                          alt="avatar"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Avatar 
+                          name={selectedUser.name} 
+                          size="32" 
+                          round={true}
+                        />
+                      )}
                     </div>
                   </div>
                 )}
@@ -84,11 +93,19 @@ const ChatContainer = () => {
                 {message.sender === authUser._id && (
                   <div className="avatar self-end mb-1">
                     <div className="w-8 h-8 rounded-full ring-2 ring-base-300 overflow-hidden">
-                      <img
-                        src={authUser.profilePicture || "/default-avatar.png"}
-                        alt="avatar"
-                        className="w-full h-full object-cover"
-                      />
+                      {authUser.profilePicture ? (
+                        <img
+                          src={authUser.profilePicture}
+                          alt="avatar"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Avatar 
+                          name={authUser.name} 
+                          size="32" 
+                          round={true}
+                        />
+                      )}
                     </div>
                   </div>
                 )}

@@ -39,11 +39,19 @@ const Sidebar = () => {
                     >
                         <div className="avatar">
                             <div className="w-10 h-10 rounded-full ring-2 ring-primary-content/20 overflow-hidden">
-                                <img 
-                                    src={user.profilePicture || "/default-avatar.png"} 
-                                    alt={user.name}
-                                    className="w-full h-full object-cover" 
-                                />
+                                {user.profilePicture ? (
+                                    <img 
+                                        src={user.profilePicture} 
+                                        alt={user.name}
+                                        className="w-full h-full object-cover" 
+                                    />
+                                ) : (
+                                    <Avatar 
+                                        name={user.name} 
+                                        size="40" 
+                                        round={true}
+                                    />
+                                )}
                             </div>
                         </div>
 

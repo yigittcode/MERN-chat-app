@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
+import Avatar from 'react-avatar';
 
 const ChatHeader = () => {
     const { selectedUser, setSelectedUser } = useChatStore();
@@ -13,11 +14,19 @@ const ChatHeader = () => {
                     {/* Avatar */}
                     <div className="avatar">
                         <div className="w-10 h-10 rounded-full ring-2 ring-base-300 overflow-hidden">
-                            <img 
-                                src={selectedUser.profilePicture || "/default-avatar.png"} 
-                                alt={selectedUser.name}
-                                className="w-full h-full object-cover" 
-                            />
+                            {selectedUser.profilePicture ? (
+                                <img 
+                                    src={selectedUser.profilePicture} 
+                                    alt={selectedUser.name}
+                                    className="w-full h-full object-cover" 
+                                />
+                            ) : (
+                                <Avatar 
+                                    name={selectedUser.name} 
+                                    size="40" 
+                                    round={true}
+                                />
+                            )}
                         </div>
                     </div>
 
@@ -38,4 +47,5 @@ const ChatHeader = () => {
         </div>
     );
 };
+
 export default ChatHeader;
