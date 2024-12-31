@@ -18,6 +18,7 @@ app.use(cors({
     origin: "http://localhost:5173",
     credentials: true,
 }));
+
 if (!process.env.JWT_SECRET) {
     generateJwtSecret().then(() => {
         console.log('JWT secret successfully generated.');
@@ -27,7 +28,6 @@ if (!process.env.JWT_SECRET) {
 } else {
     console.log('JWT secret already exists.');
 }
-
 
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);

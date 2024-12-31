@@ -12,14 +12,14 @@ import { Navigate } from 'react-router-dom'
 import { useThemeStore } from './store/useThemeStore.js'
 
 function App() {
-  const { authUser , checkAuth, isCheckingAuth} = useAuthStore()
-  const { theme, setTheme } = useThemeStore()
+  const { authUser, checkAuth, isCheckingAuth } = useAuthStore()
+  const { theme } = useThemeStore()
+  
   useEffect(() => {
     checkAuth()
   }, [checkAuth])
 
-
-  if (isCheckingAuth && !authUser ) {
+  if (isCheckingAuth && !authUser) {
     return (
       <div className='flex justify-center items-center h-screen'>
         <Loader className='size-10 animate-spin' />
@@ -34,8 +34,8 @@ function App() {
         <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/login" />} />
         <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
         <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to="/" />} />
-        <Route path="/settings" element={authUser ? <SettingsPage /> : <Navigate to="/login"  />} />
-        <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login"  />} />
+        <Route path="/settings" element={authUser ? <SettingsPage /> : <Navigate to="/login" />} />
+        <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
       </Routes>
     </div>
   )

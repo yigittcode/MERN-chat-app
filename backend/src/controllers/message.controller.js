@@ -19,7 +19,6 @@ export const sendMessage = async (req, res) => {
         const loggedInUserId = req.user.userID;
 
         let imageUrl = "";
-        //  base64 string
         const image = req.body.image;
         if (image) {
             try {
@@ -37,12 +36,12 @@ export const sendMessage = async (req, res) => {
         const message = new Message({
             sender: loggedInUserId,
             receiver: receiverId,
-            content: req.body.message,
+            content: req.body.content,
             image: imageUrl
         });
 
-        await message.save();
-        res.status(201).json({ message: "Message sent successfully" });
+        const savedMessage = await message.save();
+        res.status(201).json(savedMessage);
     } catch (error) {
         console.log("Error in sendMessage controller:", error.message);
         res.status(500).json({ error: "Internal Server Error" });
