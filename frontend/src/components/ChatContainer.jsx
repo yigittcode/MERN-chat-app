@@ -5,7 +5,7 @@ import ChatHeader from './ChatHeader'
 import MessageSkeleton from './skeletons/MessageSkeleton'
 import { useAuthStore } from '../store/useAuthStore'
 import { formatMessageTime } from '../lib/utils'
-import Avatar from 'react-avatar'
+import UserAvatar from "./UserAvatar"
 
 const ChatContainer = () => {
   const { 
@@ -52,22 +52,8 @@ const ChatContainer = () => {
             >
               <div className="flex gap-2 max-w-[80%]">
                 {message.sender !== authUser._id && (
-                  <div className="avatar self-end mb-1">
-                    <div className="w-8 h-8 rounded-full ring-2 ring-base-300 overflow-hidden">
-                      {selectedUser.profilePicture ? (
-                        <img
-                          src={selectedUser.profilePicture}
-                          alt="avatar"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <Avatar 
-                          name={selectedUser.name} 
-                          size="32" 
-                          round={true}
-                        />
-                      )}
-                    </div>
+                  <div className="self-end mb-1">
+                    <UserAvatar user={selectedUser} size={32} />
                   </div>
                 )}
 
@@ -91,22 +77,8 @@ const ChatContainer = () => {
                 </div>
 
                 {message.sender === authUser._id && (
-                  <div className="avatar self-end mb-1">
-                    <div className="w-8 h-8 rounded-full ring-2 ring-base-300 overflow-hidden">
-                      {authUser.profilePicture ? (
-                        <img
-                          src={authUser.profilePicture}
-                          alt="avatar"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <Avatar 
-                          name={authUser.name} 
-                          size="32" 
-                          round={true}
-                        />
-                      )}
-                    </div>
+                  <div className="self-end mb-1">
+                    <UserAvatar user={authUser} size={32} />
                   </div>
                 )}
               </div>
