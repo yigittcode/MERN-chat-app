@@ -3,6 +3,7 @@ import { useAuthStore } from "../store/useAuthStore";
 import { Camera, Mail, User, Save, X, Minus, Square, X as Close } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import Avatar from 'react-avatar';
 
 const ProfilePage = () => {
     const { authUser, isUpdatingProfile, updateProfile, isCheckingAuth } = useAuthStore();
@@ -121,11 +122,21 @@ const ProfilePage = () => {
                     {/* Profile Picture Section */}
                     <div className="flex items-center justify-center mb-6">
                         <div className="relative">
-                            <img
-                                src={selectedImg || authUser.profilePicture || "default-avatar.png"}
-                                alt="Profile"
-                                className="w-32 h-32 rounded-full object-cover border-2 shadow-[inset_-1px_-1px_#808080,inset_1px_1px_#FFFFFF]"
-                            />
+                            {authUser.profilePicture ? (
+                                <img
+                                    src={selectedImg || authUser.profilePicture}
+                                    alt="Profile"
+                                    className="w-32 h-32 rounded-full object-cover border-2 shadow-[inset_-1px_-1px_#808080,inset_1px_1px_#FFFFFF]"
+                                />
+                            ) : (
+                                <div className="w-32 h-32 rounded-full border-2 shadow-[inset_-1px_-1px_#808080,inset_1px_1px_#FFFFFF] overflow-hidden">
+                                    <Avatar 
+                                        name={authUser.name} 
+                                        size={128}
+                                        round={true}
+                                    />
+                                </div>
+                            )}
                             <label className="absolute bottom-0 right-0 bg-[#C0C0C0] p-2 rounded-full cursor-pointer shadow-[2px_2px_0px_0px_rgba(0,0,0,1),inset_-1px_-1px_#808080,inset_1px_1px_#FFFFFF] hover:bg-[#d4d4d4]">
                                 <Camera className="w-5 h-5" />
                                 <input
