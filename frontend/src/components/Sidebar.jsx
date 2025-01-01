@@ -12,6 +12,7 @@ const Sidebar = () => {
     useEffect(() => {
         getUsers();
         const unsubscribe = useChatStore.getState().subscribeToNewUsers();
+        
         return () => {
             if (unsubscribe) unsubscribe();
         };

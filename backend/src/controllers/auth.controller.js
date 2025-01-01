@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { generateToken } from "../lib/generateToken.js";
 import { validationResult } from "express-validator";
 import { io } from "../lib/socket.js";
+import { getSocketMap } from "../lib/socket.js";
 
 export const signup = async (req, res) => {
     try {
@@ -39,8 +40,10 @@ export const signup = async (req, res) => {
             createdAt: newUser.createdAt
         };
 
-        // New user joined
+        // New user joined - tüm bağlı kullanıcılara broadcast
         io.emit("userJoined", userForClient);
+        const socketMap = getSocketMap();
+        io.emit("getOnlineUsers", Array.from(socketMap.keys()));
 
         res.status(201).json({ 
             message: "User created successfully",

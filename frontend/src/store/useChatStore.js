@@ -95,13 +95,57 @@ export const useChatStore = create((set, get) => ({
     if (!socket) return;
 
     socket.on("userJoined", (newUser) => {
-      set(state => ({
-        users: [...state.users, newUser]
-      }));
+        set(state => ({
+            users: Array.isArray(state.users) ? 
+                [...state.users.filter(u => u._id !== newUser._id), newUser] : 
+                [newUser]
+        }));
     });
 
     return () => socket.off("userJoined");
   },
+
+  addNewUser: (newUser) => {
+    set(state => ({
+        users: Array.isArray(state.users) 
+            ? [...state.users.filter(u => u._id !== newUser._id), newUser]
+            : [newUser]
+    }));
+  },
+
+  connectSocket: () => {
+    const authUser = get().authUser;
+    if (!authUser) return false;
+
+    try {
+        if (!socket?.connected) {
+            socket.connect();
+            socket.auth = { authUserID: authUser._id };
+            
+            // Önceki dinleyicileri temizle
+            socket.off("getOnlineUsers");
+            socket.off("userJoined");  // Yeni kullanıcı dinleyicisini de temizle
+            
+            socket.on("getOnlineUsers", (onlineUsers) => {
+                if (Array.isArray(onlineUsers)) {
+                    set({ onlineUsers: onlineUsers });
+                }
+            });
+
+            socket.on("userJoined", (newUser) => {
+                // Yeni kullanıcı geldiğinde useChatStore'u güncelle
+                useChatStore.getState().addNewUser(newUser);
+            });
+            
+            set({ socket: socket });
+            return true;
+        }
+        return true;
+    } catch (error) {
+        console.error('Socket connection error:', error);
+        return false;
+    }
+  }
 }))
 
 
