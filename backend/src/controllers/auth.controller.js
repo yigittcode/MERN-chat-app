@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { generateToken } from "../lib/generateToken.js";
 import { validationResult } from "express-validator";
+import { io } from "../lib/socket.js";
 
 export const signup = async (req, res) => {
     try {
@@ -30,15 +31,20 @@ export const signup = async (req, res) => {
         await newUser.save();
         generateToken(newUser._id, res);
 
+        const userForClient = {
+            _id: newUser._id,
+            name: newUser.name,
+            email: newUser.email,
+            profilePicture: newUser.profilePicture,
+            createdAt: newUser.createdAt
+        };
+
+        // New user joined
+        io.emit("userJoined", userForClient);
+
         res.status(201).json({ 
             message: "User created successfully",
-            user: {
-                _id: newUser._id,
-                name: newUser.name,
-                email: newUser.email,
-                profilePicture: newUser.profilePicture,
-                createdAt: newUser.createdAt
-            }
+            user: userForClient
         });
 
     } catch (error) {

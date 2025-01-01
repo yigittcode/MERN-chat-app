@@ -89,6 +89,19 @@ export const useChatStore = create((set, get) => ({
   },
 
   setSelectedUser: (user) => set({ selectedUser: user }),
+
+  subscribeToNewUsers: () => {
+    const socket = useAuthStore.getState().socket;
+    if (!socket) return;
+
+    socket.on("userJoined", (newUser) => {
+      set(state => ({
+        users: [...state.users, newUser]
+      }));
+    });
+
+    return () => socket.off("userJoined");
+  },
 }))
 
 

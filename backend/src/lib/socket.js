@@ -38,6 +38,12 @@ io.on("connection", (socket) => {
     const updatedOnlineUsers = Array.from(socketMap.keys());
     io.emit("getOnlineUsers", updatedOnlineUsers);
   });
+
+
+  // New user joined
+  socket.on("newUser", (user) => {
+    socket.broadcast.emit("userJoined", user);
+  });
 });
 
 export { io, app, server }

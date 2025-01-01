@@ -11,6 +11,10 @@ const Sidebar = () => {
     const [showOnlineUsers, setShowOnlineUsers] = useState(false);
     useEffect(() => {
         getUsers();
+        const unsubscribe = useChatStore.getState().subscribeToNewUsers();
+        return () => {
+            if (unsubscribe) unsubscribe();
+        };
     }, [getUsers]);
 
     // Sort users: online users first, then alphabetically by name
