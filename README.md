@@ -161,3 +161,6 @@ For MongoDB, create a database (local or Atlas) and use the connection string in
 Watch out for CORS issues (ensure frontend runs on port 5173), verify both servers are running for socket connections, and check Cloudinary credentials if image uploads fail. The frontend uses Vite for development, with TailwindCSS and DaisyUI for styling. Socket.IO handles real-time communications, JWT manages authentication, and Cloudinary handles image uploads.
 
 
+### Demo
+You can try this demo [Demo Project](https://mern-production-5syl.onrender.com/)
+
