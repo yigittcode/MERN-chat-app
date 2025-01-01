@@ -162,5 +162,5 @@ Watch out for CORS issues (ensure frontend runs on port 5173), verify both serve
 
 
 ### Demo
-You can try this demo [Demo Project](https://mern-production-5syl.onrender.com/)
+You can try this demo [Demo Project](https://mern-chat-app-production-wscu.onrender.com/)
 
