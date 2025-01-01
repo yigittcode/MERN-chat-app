@@ -14,12 +14,16 @@ export const useAuthStore = create((set, get) => ({
   checkAuth: async () => {
     try {
         const response = await axiosInstance.get('/auth/check-auth');
-        get().connectSocket();
-        set({ authUser: response.data.user })
+        set({ authUser: response.data.user });
+        
+        // Kimlik doğrulama sonrası socket bağlantısını kur
+        setTimeout(() => {
+            get().connectSocket();
+        }, 100);
     } catch (error) {
-        set({ authUser: null })
+        set({ authUser: null });
     } finally {
-        set({ isCheckingAuth: false })
+        set({ isCheckingAuth: false });
     }
   },
 
@@ -27,11 +31,35 @@ export const useAuthStore = create((set, get) => ({
     set({ isSigningUp: true });
     try {
         const response = await axiosInstance.post('/auth/signup', data);
-        get().connectSocket();
-        set({ authUser: response.data })
-        return { success: true };
+        
+        // Önce state'i güncelle
+        await set({ authUser: response.data.user });
+        
+        // Socket bağlantısını kur ve başarılı olduğundan emin ol
+        try {
+            await new Promise((resolve, reject) => {
+                const socketConnect = get().connectSocket();
+                
+                if (socketConnect) {
+                    socket.once('connect', () => {
+                        resolve();
+                    });
+                    
+                    socket.once('connect_error', (error) => {
+                        reject(error);
+                    });
+                } else {
+                    reject(new Error('Socket connection failed'));
+                }
+            });
+            
+            return { success: true };
+        } catch (socketError) {
+            console.error('Socket connection error:', socketError);
+            return { success: true }; // Socket hatası olsa bile signup başarılı sayılabilir
+        }
     } catch (error) {
-        return { success: false, error: error.response?.data?.message };
+        return { success: false, error: error.response?.data?.error };
     } finally {
         set({ isSigningUp: false });
     }
@@ -39,21 +67,29 @@ export const useAuthStore = create((set, get) => ({
 
   connectSocket: () => {
     const authUser = get().authUser;
-    if (authUser && !socket?.connected) {
-        socket.connect();
-        set({ socket: socket });
-        socket.auth = { authUserID: authUser._id };
-        
-        socket.on("getOnlineUsers", (onlineUsers) => {
-          console.log("Received online users:", onlineUsers);
-          if (Array.isArray(onlineUsers)) {
-            set({ onlineUsers: onlineUsers });
-          } else {
-            console.error("Received invalid online users format:", onlineUsers);
-          }
-        });
-        
-        console.log("Socket connected!", authUser._id);
+    if (!authUser) return false;
+
+    try {
+        if (!socket?.connected) {
+            socket.connect();
+            socket.auth = { authUserID: authUser._id };
+            
+            // Önceki dinleyicileri temizle
+            socket.off("getOnlineUsers");
+            
+            socket.on("getOnlineUsers", (onlineUsers) => {
+                if (Array.isArray(onlineUsers)) {
+                    set({ onlineUsers: onlineUsers });
+                }
+            });
+            
+            set({ socket: socket });
+            return true;
+        }
+        return true;
+    } catch (error) {
+        console.error('Socket connection error:', error);
+        return false;
     }
   },
 
@@ -70,23 +106,37 @@ export const useAuthStore = create((set, get) => ({
     try {
         const response = await axiosInstance.post('/auth/login', data);
         
+        // Önce state'i güncelle
+        await set({ authUser: response.data.user });
+        
+        // Socket bağlantısını kur ve başarılı olduğundan emin ol
         try {
-            set({ authUser: response.data.user}); 
-            get().connectSocket();
+            await new Promise((resolve, reject) => {
+                const socketConnect = get().connectSocket();
+                
+                // Socket bağlantısı başarılı mı kontrol et
+                if (socketConnect) {
+                    socket.once('connect', () => {
+                        resolve();
+                    });
+                    
+                    socket.once('connect_error', (error) => {
+                        reject(error);
+                    });
+                } else {
+                    reject(new Error('Socket connection failed'));
+                }
+            });
+            
             return { success: true };
-        } catch (error) {
-            console.error('State update error:', error);
-            await axiosInstance.post('/auth/logout');
-            set({ authUser: null });
-            return { success: false, error: 'Login failed due to state error' };
+        } catch (socketError) {
+            console.error('Socket connection error:', socketError);
+            // Socket bağlantısı başarısız olsa bile login başarılı sayılabilir
+            return { success: true };
         }
     } catch (error) {
         console.error('Login Error:', error);
-        const errorMessage = 
-            error.response?.data?.message ||
-            error.response?.data?.error ||
-            error.message ||
-            'Login failed';
+        const errorMessage = error.response?.data?.error || 'Login failed';
         set({ authUser: null });
         return { success: false, error: errorMessage };
     } finally {

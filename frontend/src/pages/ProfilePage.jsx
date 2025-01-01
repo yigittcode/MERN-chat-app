@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Camera, Mail, User, Save, X, Minus, Square, X as Close } from "lucide-react";
 import { Navigate } from "react-router-dom";
@@ -9,9 +9,18 @@ const ProfilePage = () => {
     const [selectedImg, setSelectedImg] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
-        name: authUser?.name || '',
-        email: authUser?.email || ''
+        name: '',
+        email: ''
     });
+
+    useEffect(() => {
+        if (authUser) {
+            setFormData({
+                name: authUser.name || '',
+                email: authUser.email || ''
+            });
+        }
+    }, [authUser]);
 
     const handleImageUpload = async (e) => {
         try {
